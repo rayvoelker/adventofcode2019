@@ -3,8 +3,8 @@ import math
 filename = 'day_01_input.txt'
 input = open(filename).read().split("\n")
 
-for value in input:
-    print(value, end=", ")
+# for value in input:
+#     print(value, end=", ")
 
 """
 For example:
@@ -13,24 +13,7 @@ For example:
     For a mass of 14, dividing by 3 and rounding down still yields 4, so the fuel required is also 2.
     For a mass of 1969, the fuel required is 654.
     For a mass of 100756, the fuel required is 33583.
-"""
 
-# test_values = list([12, 14, 1969, 100756])
-
-running_sum = 0
-# for value in test_values:
-for value in input:
-    value = int(value)
-    result = ( math.floor(value / 3) - 2)
-    print('values:  {}\nresult: {}\n'.format(value, result))
-    running_sum += result
-
-print(running_sum)
-
-
-# part two
-
-"""
     A module of mass 14 requires 2 fuel. This fuel requires no further fuel (2
     divided by 3 and rounded down is 0, which would call for a negative fuel),
     so the total fuel required is still just 2.
@@ -46,7 +29,24 @@ print(running_sum)
 """
 
 def calc_mass(input):
-    result = ( math.floor(input / 3) - 2)
+    """
+    # doctests:
+    >>> calc_mass(12)
+    2
+    >>> calc_mass(14)
+    2
+    >>> calc_mass(1969)
+    654
+    >>> calc_mass(100756)
+    33583
+
+    For a mass of 12, divide by 3 and round down to get 4, then subtract 2 to get 2.
+    For a mass of 14, dividing by 3 and rounding down still yields 4, so the fuel required is also 2.
+    For a mass of 1969, the fuel required is 654.
+    For a mass of 100756, the fuel required is 33583.
+
+    """
+    result = (input // 3) - 2
     if (result <= 0):
         return 0
     else:
@@ -60,6 +60,9 @@ def calc_fuel_mass(input):
     21 fuel, which requires 5 fuel, which requires no further fuel. So, the
     total fuel required for a module of mass 1969 is 654 + 216 + 70 + 21 + 5 =
     966.
+
+    >>> calc_fuel_mass(654)
+    312
     """
     sum_fuel_masses = 0
     current_fuel = calc_mass(input)
@@ -72,9 +75,21 @@ def calc_fuel_mass(input):
     return sum_fuel_masses
 
 
-print('calc_mass: {}'.format(calc_mass(1969)))
-print('calc_fuel_mass: {}'.format(calc_fuel_mass( calc_mass(1969) )))
+if __name__ == "__main__":
+    import doctest 
+    print(doctest.testmod())
 
+# part one
+running_sum = 0
+
+for value in input:
+    result = calc_mass(int(value))
+    running_sum += result
+
+print('fuel required for mass of all modules: {}'.format(running_sum))
+
+
+# part two
 running_sum = 0
 for value in input:
     value = int(value)
