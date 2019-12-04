@@ -22,6 +22,8 @@ How many different passwords within the range given in your puzzle input meet
 these criteria?
 
 246515-739105
+
+not 547
 """
 
 re_double = re.compile(r"^(.)\1{1,}$")
@@ -59,21 +61,62 @@ def check_double(value):
     return False
 
 
-def check_dec(value):
+def check_desc(value):
     """
-    >>> check_dec(223450)
+    >>> check_desc(223450)
     False
-    >>> check_dec(111111)
+    >>> check_desc(111111)
     True
-    >>> check_dec(123789)
+    >>> check_desc(123789)
     True
     """
     string = str(value)
     for i in range(len(string)-1, 0, -1):
         if int(string[i]) < int(string[i-1]):
             return False
+    
     return True
 
+
+def has_only_double(value):
+    """
+    >>> has_only_double(112233)
+    True
+
+    >>> has_only_double(123444)
+    False
+
+    >>> has_only_double(111122)
+    True
+
+    >>> has_only_double(124444)
+    False
+
+    >>> has_only_double(113444)
+    True
+    """
+
+    only_double = False
+    string = str(value)
+    prev_string = ''
+    match_count = 0
+    for i in range(len(string)):
+        if string[i] == prev_string:
+            match_count += 1
+        else:
+            if match_count == 1:
+                return True
+            match_count = 0
+
+        if match_count == 1:
+            only_double = True
+
+        if match_count > 1:
+            only_double = False
+
+        prev_string = string[i]
+
+    return only_double
 
 if __name__ == "__main__":
     import doctest 
@@ -82,8 +125,17 @@ if __name__ == "__main__":
 
 count_qualify = 0
 for i in range(246515, 739105, 1):
-    if (check_double(i) == True and check_dec(i) == True):
+    if (check_double(i) == True and check_desc(i) == True):
         count_qualify += 1
         print('.', end='')
 
 print('\ncount qualify: {}'.format(count_qualify))
+
+count_qualify = 0
+print("\n")
+for i in range(246515, 739105, 1):
+    if (has_only_double(i) == True and check_desc(i) == True):
+        count_qualify += 1
+        print('.', end='')
+
+print('\ncount qualify part 2: {}'.format(count_qualify))
