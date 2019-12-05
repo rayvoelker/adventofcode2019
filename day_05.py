@@ -16,21 +16,39 @@ def final_state(input_intcode, is_slice=False):
     >>> final_state(array('l', [1,1,1,4,99,5,6,0,99]))
     array('l', [30, 1, 1, 4, 2, 5, 6, 0, 99])
 
+    # >>> final_state(array('l', [3,0,4,0,99]))
+    array('l', [0, 0, 4, 0, 99])
     """
     # for i in range(0, len(input_intcode)-4, 4):
     i = 0
-    jump = 4
+    # set the number of intcode to jump based ont he op_code
+    jump = 0
     while i < (len(input_intcode) - jump):
         op_code = input_intcode[i]
-        input_one = input_intcode[input_intcode[i+1]]
-        input_two = input_intcode[input_intcode[i+2]]
+        input_one = None
+        input_two = None
 
         if op_code == 1:
             # add
+            input_one = input_intcode[input_intcode[i+1]]
+            input_two = input_intcode[input_intcode[i+2]]
             input_intcode[input_intcode[i+3]] = input_one + input_two
+            jump = 4
         elif op_code == 2:
+            input_one = input_intcode[input_intcode[i+1]]
+            input_two = input_intcode[input_intcode[i+2]]
             # multiply
             input_intcode[input_intcode[i+3]] = input_one * input_two
+            jump = 4
+        elif op_code == 3:
+            # takes a single integer as input and saves it to the position given
+            # by its only parameter
+            input_intcode[input_intcode[i+1]] = input_intcode[i+1]
+            jump = 2
+        elif op_code == 4:
+            input_one = input_intcode[input_intcode[i+1]]
+            input_intcode[0] = input_one
+            jump = 2
         elif op_code == 99:
             # end
             break
@@ -49,28 +67,4 @@ if __name__ == "__main__":
     import doctest 
     print(doctest.testmod())
 
-
-filename = 'day_02_input.txt'
-
-intcode = array('l', [int(value) for value in open(filename).read().split(",")])
-
-"""
-before running the program, replace position 1 with the value 12 and replace
-position 2 with the value 2. What value is left at position 0 after the program
-halts?
-"""
-intcode[1] = 12
-intcode[2] = 2
-
-# send a slice to keep the data intact
-print(final_state(intcode[:], is_slice=True))
-
-for noun in range(0, 100):
-    for verb in range(0, 100):
-        intcode[1] = noun
-        intcode[2] = verb
-
-        if final_state(intcode[:], is_slice=True) == 19690720:
-            print("noun, verb: 100 * {} + {} = {}".format(noun, verb, (100*noun+verb)))
-
-            break
+print(final_state(array('l', [3,0,4,0,99])))
