@@ -2,6 +2,7 @@
 from collections import deque
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 filename = 'day_08_input.txt'
 input = open(filename).read().split("\n")[0]
@@ -20,6 +21,14 @@ class Image:
             self.layers.append(layer)
 
 
+    def render(self):
+        output = self.layers[0]
+        for layer in self.layers:
+            output = np.where(output != 2, output, layer)
+
+        plt.imsave('day_8.png', output)
+
+        
 image = Image(height=6, width=25, data=deque(input))
 
 """
@@ -47,3 +56,5 @@ unique, counts = np.unique(image.layers[layer_min_zeros], return_counts=True)
 counts = dict(zip(unique, counts))
 
 print(counts)
+
+image.render()
